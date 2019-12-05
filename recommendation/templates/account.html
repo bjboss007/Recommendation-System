@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="content-section justify-content-md-center">
+        {% if current_user.username != user.username %}
+            <div class = "media">
+                <img src="{{ user.image_file }}" alt="" class="rounded-circle account-img">
+                <div class="media-body">
+                    <h2 class="account-heading">{{user.username }}</h2>
+                    <p class="text-secondary"> {{user.email}} </p>
+                </div>
+            </div>
+           <br>
+    </div>      
+    {% endif %}
+    {% if current_user.username == user.username %}
+        <div class = "media">
+            <img src="{{ current_user.image_file }}" alt="" class="rounded-circle account-img">
+            <div class="media-body">
+                <h2 class="account-heading">{{current_user.username }}</h2>
+                <p class="text-secondary"> {{current_user.email}} </p>
+            </div>
+        </div>
+        <div class="content-section">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-6">
+                        <p>Department : </p>
+                    </div>
+                    <div class="col-6">
+                        <p>Science </p>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-6">
+                        <p>Subject Conbinations </p>
+                    </div>
+                    <div class="col-6">
+                        <p>Biology</p>
+                        <p>Chemistry</p>
+                        <p>Mathematics</p>
+                        <p>English</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <p>Choice of Career : </p>
+                    </div>
+                    <div class="col-6">
+                        <p>Medicine</p>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-6">
+                        <p>Recommended Career : </p>
+                    </div>
+                    <div class="col-6">
+                        <p style = "height:37px; padding:5px; border-style:none; border-radius:3px; background-color: #309fee; color:white">Medicine</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="{{url_for ('users.update') }}" class=" btn btn-outline-info">Edit Profile</a>
+    </div>
+    {% endif %}   
+        
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <form action="" method = "POST">
+        {{form.hidden_tag()}}
+        <fieldset class="form-group">
+            <legend class="border-bottom md-4">Register</legend>
+            <div class="row">
+                <div class="col-5">
+                    <div class="content-section">
+                        <div class="form-group">
+                            {{form.username.label(class = "form-control-label")}}
+                            {% if form.username.errors %}
+                                {{form.username(class = "form-control is-invalid")}}
+                                <div class="invalid-feedback">
+                                    {% for e in form.username.errors %}
+                                            <span>{{e}}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{form.username(class = "form-control", disabled = "disabled")}}
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{form.email.label(class = "form-control-label")}}
+                                {% if form.email.errors %}
+                                    {{form.email(class = "form-control is-invalid")}}
+                                    <div class="invalid-feedback">
+                                        {% for e in form.email.errors %}
+                                            <span>{{e}}</span>
+                                        {% endfor %}
+                                    </div>
+                            {% else %}
+                                {{form.email(class = "form-control",disabled = "disabled")}}  
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="content-section">
+                        <div class="form-group">
+                            {{form.age.label(class = "form-control-label")}}
+                            {% if form.age.errors %}
+                                {{form.age(class = "form-control is-invalid")}}
+                                <div class="invalid-feedback">
+                                    {% for e in form.age.errors %}
+                                        <span>{{e}}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{form.age(class = "form-control")}}
+                            {% endif %}
+                        </div>
+                        <div class="form-group" >
+                            {{form.arms.label(class = "form-control-label")}}
+                            {{form.arms(class = "form-control")}}
+                        </div>
+
+                        <div class="form-group" id = "subjectRow">
+                            <div class="row" >
+                                {% for sub in form.subjects %}
+                                    <div class="col-6">
+                                        {{sub}}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </fieldset>
+        <hr>
+        <div class="form-group">
+            {{form.submit(class = "btn btn-outline-info ")}}
+        </div>
+    </form>
+
+{% endblock content %}

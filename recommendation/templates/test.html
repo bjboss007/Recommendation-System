@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <form action="" method = "POST">
+        <fieldset class="form-group">
+            <legend class="border-bottom md-4">Register</legend>
+            <div class="row">
+                <div class="col-5">
+                    <div class="content-section">
+                        <div class="form-group">
+                            <label class="form-control-label" for="username">username</label>
+                            <input class="form-control" disabled="disabled" id="username" name="username" required type="text" value={{user.username}}>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label" for="email">email</label>
+                            <input class="form-control" disabled="disabled" id="email" name="email" required type="text" value={{user.email}}>  
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="content-section">
+                        <div class="form-group">
+                            <label class="form-control-label" for="age">age</label>
+                            <input class="form-control" id="age" name="age" required type="number" value="">
+                            
+                        </div>
+                        <div class="form-group" >
+                            <label class="form-control-label" for="arms">Arms</label>
+                            <select class="form-control" id="arms" name="arms">
+                                <option value="Art">Art</option>
+                                <option value="Commercial">Commercial</option>
+                                <option value="Science">Science</option>
+                            </select>
+                        </div>
+                        <div class="form-group" >
+                            <div class="row"    >
+                                <table class = "table table-borderless">
+                                    <thead class = "thead-dark">
+                                        <tr>
+                                            <th class = "text-center">Subject Name</th>
+                                            <th class = "text-center">Subject Rating</th>   
+                                        </tr>
+                                    </thead>
+                                    <tbody id = "subjectRow">
+                                            
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </fieldset>
+        <hr>
+        <div class="form-group">
+            <input class="btn btn-outline-info " id="submit" name="submit" type="submit" value="Update">
+        </div>
+    </form>
+
+
+
+{% endblock content %}

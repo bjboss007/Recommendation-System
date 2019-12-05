@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        <form action="" method = "POST" >
+            {% for question in proposed %}
+                <p>
+                    <h4>{{loop.index}}) {{question.question}} </h4>
+                    {% for option in question.options %}
+                        <input type="radio" value = {{option}} name = {{question.id}}> <strong style="font-weight:400">{{option}}</strong><br>
+                    {% endfor %}
+                </p>
+                
+            {% endfor %}
+            <div class="form-group">
+                <input class="form-control btn btn-primary" type="submit" value = "Submit">
+            </div>
+        </form>
+    </div>
+    
+{% endblock content %}
