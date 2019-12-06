@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, render_template, url_for, flash, request, jsonify
 from flask_login import login_user, current_user,logout_user,login_required
-from recommendation.models import User, Role, Arm, Subjectrating, Subject
+from recommendation.models import User, Arm, Subjectrating, Subject
 from recommendation import bcrypt, db
 from .forms import RegistrationForm, LoginForm, UpdateForm, SubjectForm
 from .questions import questions
@@ -38,16 +38,12 @@ def register():
         return redirect(url_for('main.account'))
     
     form = RegistrationForm()
-    role = Role.query.filter_by(name = "User").first()
     arm = Arm.query.filter_by(name="Science").first()
     if form.validate_on_submit():
         user = User(
             username = form.username.data,
             password = form.password.data,
             email = form.email.data,
-            role = role,
-            age = 19,
-            arm = arm
         )
         
         db.session.add(user)
@@ -74,11 +70,30 @@ def subjects(arm):
 def update():
     
     if request.method == "POST":
+        entries = list(request.form.items())
+        subjects = entries[2:len(entries)-1]
+        user_info = UserInfo()
+        for subject in subjects:
+            print(subject)
+            
+            sub = Subject.query.filter_by(name = subject[0]).first()
+            sub_rating = Subjectrating(subject_id = sub.id, rating = subject[1])
+            db.session.add(sub_rating)
+            user_info.subjects.append(sub_rating)
+            
+        arm = Arm.query.filter_by(name = request.form["arms"]).first()
+        user_info.age = request.form["age"]
+        user_info.arm = arm
+        user_info.career = request.form["career"]
+        user_info.user_id = current_user.id
         
-        print(request.form["age"])
-        print(dict(request.form.items()))
-        for entity in request.form.items():
-            print(entity, end = "\n")
+        db.session.add(user_info)
+        db.session.commit()
+        
+        print(user_info.subjects)
+        print(user_info.age)
+        print(user_info.arm)
+        
         return redirect(url_for('users.question'))
     return render_template('test.html', title = 'Update',  user = current_user)
 
@@ -130,7 +145,9 @@ def question():
                 if question["id"] == int(i):
                     if incoming[i] == question["answer"]:
                         count+=1            
-        # return redirect(url_for('users.account'))
+        iq = (100*count)/curent_user.user_info.age
+        current_user.user_info.iq = iq
+        db.session.commit()
         print("*"*90)
         print("This is the incoming data : {}".format(count))
         
