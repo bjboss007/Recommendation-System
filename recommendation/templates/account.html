@@ -8,6 +8,7 @@
                 <div class="media-body">
                     <h2 class="account-heading">{{user.username }}</h2>
                     <p class="text-secondary"> {{user.email}} </p>
+                    
                 </div>
             </div>
            <br>
@@ -17,8 +18,9 @@
         <div class = "media">
             <img src="{{ current_user.image_file }}" alt="" class="rounded-circle account-img">
             <div class="media-body">
-                <h2 class="account-heading">{{current_user.username }}</h2>
+                <h2 class="account-heading" style = "font-weight:400">{{current_user.username }}</h2>
                 <p class="text-secondary"> {{current_user.email}} </p>
+                <p class="text-secondary"> {{current_user.userinfo.age}} </p>
             </div>
         </div>
         <div class="content-section">
@@ -28,26 +30,28 @@
                         <p>Department : </p>
                     </div>
                     <div class="col-6">
-                        <p>Science </p>
+                        <p > <span class = "bold">{{current_user.userinfo.arm.name}} </span></p>
                     </div>
                 </div>
+                <hr>
                  <div class="row">
                     <div class="col-6">
                         <p>Subject Conbinations </p>
                     </div>
                     <div class="col-6">
-                        <p>Biology</p>
-                        <p>Chemistry</p>
-                        <p>Mathematics</p>
-                        <p>English</p>
+                        {% for sub in current_user.userinfo.arm.arm_subjects %}
+                            <p> <span class = "bold"> {{ sub.name }} </span> </p>
+                        {% endfor %}
+                        
                     </div>
                 </div>
+                <hr>
                 <div class="row">
                     <div class="col-6">
                         <p>Choice of Career : </p>
                     </div>
                     <div class="col-6">
-                        <p>Medicine</p>
+                        <p><span class = "bold">{{current_user.userinfo.career}} </span></p>
                     </div>
                 </div>
                  <div class="row">
@@ -63,5 +67,4 @@
         <a href="{{url_for ('users.update') }}" class=" btn btn-outline-info">Edit Profile</a>
     </div>
     {% endif %}   
-        
 {% endblock %}

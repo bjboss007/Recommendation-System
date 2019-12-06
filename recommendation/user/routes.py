@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, render_template, url_for, flash, request, jsonify
 from flask_login import login_user, current_user,logout_user,login_required
-from recommendation.models import User, Arm, Subjectrating, Subject
+from recommendation.models import User, Arm, Subjectrating, Subject, UserInfo
 from recommendation import bcrypt, db
 from .forms import RegistrationForm, LoginForm, UpdateForm, SubjectForm
 from .questions import questions
@@ -23,9 +23,9 @@ def login():
         if user and bcrypt.check_password_hash(user.password,form.password.data):
             login_user(user, remember = form.remember.data)
             next_page = request.args.get('next')
-            flash(f'Login successful ','success')
-            flash(f'Please edit your profile to complete the registration', 'info')
-            return redirect(next_page) if next_page else redirect(url_for('users.account'))
+            # flash(f'Login successful ','success')
+            # flash(f'Please edit your profile to complete the registration', 'info')
+            return redirect(next_page) if next_page else redirect(url_for('users.update'))
         else:
             flash(f'Login Unsuccessful, Please check your email and password ','danger')
     return render_template("login.html", title = 'Login', form=form)
@@ -71,28 +71,29 @@ def update():
     
     if request.method == "POST":
         entries = list(request.form.items())
-        subjects = entries[2:len(entries)-1]
+        subjects = entries[2:len(entries)-2]
+        arm = Arm.query.filter_by(name = request.form["arms"]).first()
         user_info = UserInfo()
+        user_info.arm = arm
+        user_info.age = request.form["age"]
+        user_info.career = request.form["career"]
+        user_info.iq = 0
+            
         for subject in subjects:
             print(subject)
             
             sub = Subject.query.filter_by(name = subject[0]).first()
+            print(sub.id)
+            
             sub_rating = Subjectrating(subject_id = sub.id, rating = subject[1])
             db.session.add(sub_rating)
             user_info.subjects.append(sub_rating)
-            
-        arm = Arm.query.filter_by(name = request.form["arms"]).first()
-        user_info.age = request.form["age"]
-        user_info.arm = arm
-        user_info.career = request.form["career"]
-        user_info.user_id = current_user.id
+        print(user_info.subjects)
+
+        current_user.userinfo = user_info
         
         db.session.add(user_info)
         db.session.commit()
-        
-        print(user_info.subjects)
-        print(user_info.age)
-        print(user_info.arm)
         
         return redirect(url_for('users.question'))
     return render_template('test.html', title = 'Update',  user = current_user)
@@ -145,11 +146,18 @@ def question():
                 if question["id"] == int(i):
                     if incoming[i] == question["answer"]:
                         count+=1            
-        iq = (100*count)/curent_user.user_info.age
-        current_user.user_info.iq = iq
+        iq = (100*count)/current_user.userinfo.age
+        current_user.userinfo.iq = iq
         db.session.commit()
-        print("*"*90)
-        print("This is the incoming data : {}".format(count))
         
+        print("*"*90)
+        print(current_user.userinfo.iq)
+       
+        print("This is the incoming data : {}".format(count))
+        flash(f'Account Updated successfully','success')
+        return redirect(url_for('users.result',score = count))
     return render_template('question.html', title = 'Question', proposed = questions)
 
+@users.route("/question/result/<score>")
+def result(score):
+    return render_template("result.html", score = score)

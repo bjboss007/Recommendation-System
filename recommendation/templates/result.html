@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        <p>
+            <h3>
+                Thank you for taking the your time to answer the IQ questions. <br>
+                You score is {{score}}/10
+            </h3>
+        </p>
+        <p>
+            Click here to see your profile and recommendation <br>
+            <a href="{{url_for('users.account')}}" type="button" class = "btn btn-outline-primary">Click me</a>
+        </p>
+    </div>
+   
+{% endblock content %}
