@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, url_for, flash, request, jsonify
+from flask import Blueprint, redirect, render_template, url_for, flash, request, jsonify, abort
 from flask_login import login_user, current_user,logout_user,login_required
 from recommendation.models import User, Arm, Subjectrating, Subject, UserInfo
 from recommendation import bcrypt, db
@@ -57,11 +57,14 @@ def register():
 def subjects(arm):
     subjectArr = []
     arm_sub = Arm.query.filter_by(name = arm).first()
-    for subject in arm_sub.arm_subjects:
-        subjectObj = {}
-        subjectObj["id"] = subject.id
-        subjectObj["name"] = subject.name
-        subjectArr.append(subjectObj)
+    if arm_sub == None:
+        abort(404)
+    else:
+        for subject in arm_sub.arm_subjects:
+            subjectObj = {}
+            subjectObj["id"] = subject.id
+            subjectObj["name"] = subject.name
+            subjectArr.append(subjectObj)
     return jsonify({"subjects" : subjectArr})
     
 
@@ -161,3 +164,40 @@ def question():
 @users.route("/question/result/<score>")
 def result(score):
     return render_template("result.html", score = score)
+
+# @users.route("/test")
+def parseData():
+    user = User.query.filter_by(username = "mob").first()
+    subjects = user.userinfo.subjects
+    userObj = {}
+    userObj["age"] = user.userinfo.age
+    userObj["IQ"] = float("{0:.2f}".format(user.userinfo.iq))
+    userObj["arm"] = user.userinfo.arm.name
+    subjectArr = {}
+    for subject in subjects:
+        subject_name = Subject.query.get(subject.subject_id)
+        subjectArr[subject_name.name] = subject.rating
+    userObj["subjects"] =  subjectArr
+    data = jsonify(userObj)
+    return data
+    
+
+dataform = []
+science_padding = [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+@users.route("/test")
+def correctForm():
+    data = parseData().get_json()
+    print("*"*90)
+ 
+    if data["arm"] == "Science":
+        for sub in data["subjects"]:
+            dataform = [data["age"],float(data["subjects"]["Mathematics"]),float(data["subjects"]["Biology"]),float(data["subjects"]["Physics"]),float(data["subjects"]["Chemistry"])]+science_padding
+    elif data["arm"] == "Art":
+        for sub in data["subjects"]:
+            dataform = [data["age"],data["IQ"],float(data["subjects"]["Mathematics"]),0.0,0.0,0.0,0.0,0.0,0.0,float(data["subjects"]["Government"]),float(data["subjects"]["English"]),float(data['subjects']["History"]),float(data['subjects']["CRK"])]
+    elif data["arm"] == "Commercial":
+        for sub in data["subjects"]:
+            dataform = [data["age"],data["IQ"],float(data['subjects']["Mathematics"]),0.0,0.0,0.0,float(data['subjects']["Accounting"]),float(data['subjects']["Commerce"]),float(data['subjects']["Economics"])]     
+    return data
+  
+    
