@@ -24,7 +24,7 @@ async def setup_recommender():
 
 loop = asyncio.get_event_loop()
 tasks = [asyncio.ensure_future(setup_recommender())]
-learn = loop.run_until_complete(asyncio.gather(*tasks))[0]
+learner = loop.run_until_complete(asyncio.gather(*tasks))[0]
 loop.close()
 
         
@@ -38,13 +38,18 @@ def login():
         flash(f'You are already logged in ','info')
         return redirect(url_for('users.account'))
     
-    
     if form.validate_on_submit():
         user = User.query.filter_by(email = form.email.data).first()
         if user and bcrypt.check_password_hash(user.password,form.password.data):
             login_user(user, remember = form.remember.data)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('users.update'))
+            if next_page:
+                return redirect(next_page)  
+            try:
+                if current_user.userinfo.re_course != '':
+                    return redirect(url_for('users.account'))
+            except Exception:
+                return redirect(url_for('users.update'))
         else:
             flash(f'Login Unsuccessful, Please check your email and password ','danger')
     return render_template("login.html", title = 'Login', form=form)
@@ -97,6 +102,7 @@ def update():
         user_info.age = request.form["age"]
         user_info.career = request.form["career"]
         user_info.iq = 0
+        user_info.re_course = ''
         for subject in subjects:
             sub = Subject.query.filter_by(name = subject[0]).first()        
             sub_rating = Subjectrating(subject_id = sub.id, rating = subject[1])
@@ -118,12 +124,8 @@ def logout():
 @login_required
 def account():
     user = User.query.filter_by(username = current_user.username).first()
-    model_data = correctForm(user)
-    # learn = load(open("../../../original.pkl", 'rb'))
-    prediction = learn.predict(model_data)
-    recom_course = mapping(prediction[0])
-    flash(f'Account Updated successfully','success')
-    return render_template("account.html", title="Account", user = current_user, recom_course = recom_course)
+    flash(f'Welcome back','success')
+    return render_template("account.html", title="Account", user = current_user)
 
 
 @users.route("/question", methods = ['GET','POST'])
@@ -149,7 +151,6 @@ def question():
 def result(score):
     user = User.query.filter_by(username = current_user.username).first()
     model_data = correctForm(user)
-    # learner = load(open("../../../original.pkl", 'rb'))
     prediction = learner.predict(model_data)
     recom_course = mapping(prediction[0])
     user.userinfo.re_course = recom_course
