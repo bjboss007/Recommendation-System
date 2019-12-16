@@ -3,14 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
+from flask_script import Manager
 from .config import Config
 import os
+
 
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 mail = Mail()
+
 
 def create_app(config_class = Config):
     app = Flask(__name__)
@@ -24,11 +27,9 @@ def create_app(config_class = Config):
     login_manager.login_message_category = 'info'
     
     from recommendation.user.routes import users
-    from recommendation.main.routes import main
     from recommendation.admin.routes import admin
     
     app.register_blueprint(users)
-    app.register_blueprint(main)
     app.register_blueprint(admin)
     
     return app

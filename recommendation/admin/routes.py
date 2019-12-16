@@ -9,7 +9,9 @@ admin = Blueprint('admin', __name__)
 
 # @admin.route("/login", methods = ["GET","POST"])
 # def login():
+#     if request.method == "POST":
+#         if request.form["username"] == "admin@gmail" and request.form["password"] == "password":
+#             login(admin)
     
     
-# def addQuestion():
      

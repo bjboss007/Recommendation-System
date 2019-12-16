@@ -6,8 +6,6 @@ from recommendation import db, login_manager, bcrypt
 from flask_login import UserMixin
 
 
-
-
 @login_manager.user_loader
 def load_user(user_id):
    return User.query.get(int(user_id))
@@ -76,8 +74,9 @@ class UserInfo(db.Model):
    id = db.Column(db.Integer, primary_key = True)
    age = db.Column(db.Integer, nullable = False)
    career = db.Column(db.String(64), nullable = False)
-   iq = db.Column(db.Integer, nullable = True)
+   iq = db.Column(db.Integer, nullable = False)
    arm_id = db.Column(db.Integer, db.ForeignKey('arm.id'))
+   re_course = db.Column(db.String, nullable = False)
    subjects = db.relationship('Subjectrating', secondary=user_subjects, lazy='subquery', backref=db.backref('users', lazy=True))
    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
    

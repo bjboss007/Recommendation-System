@@ -8,17 +8,36 @@ import os
 from pickle import load
 import numpy as np
 from recommendation.utils import mapping, correctForm
+from pathlib import Path
+import asyncio
 
+root = Path(__file__).parent
 
 users = Blueprint('users', __name__)
+
+async def setup_recommender():
+    try:
+        learner = load(open("recommendation/original.pkl", 'rb'))
+        return learner
+    except RuntimeError as e:
+        print(e)
+
+loop = asyncio.get_event_loop()
+tasks = [asyncio.ensure_future(setup_recommender())]
+learn = loop.run_until_complete(asyncio.gather(*tasks))[0]
+loop.close()
+
+        
 
 @users.route('/', methods = ['GET','POST'])
 @users.route('/login', methods = ['GET','POST'])
 def login():
+    
+    form = LoginForm()
     if current_user.is_authenticated:
         flash(f'You are already logged in ','info')
         return redirect(url_for('users.account'))
-    form = LoginForm()
+    
     
     if form.validate_on_submit():
         user = User.query.filter_by(email = form.email.data).first()
@@ -35,7 +54,7 @@ def login():
 def register():
     if current_user.is_authenticated:
         flash(f'You are already logged in ','info')
-        return redirect(url_for('main.account'))
+        return redirect(url_for('users.account'))
     
     form = RegistrationForm()
     arm = Arm.query.filter_by(name="Science").first()
@@ -45,10 +64,8 @@ def register():
             password = form.password.data,
             email = form.email.data,
         )
-        
         db.session.add(user)
         db.session.commit()
-        
         flash(f'Your account has been created! You are now able to loggin','success')
         return redirect(url_for('users.login'))
     return render_template('register.html', title = 'Register', form = form)
@@ -102,10 +119,10 @@ def logout():
 def account():
     user = User.query.filter_by(username = current_user.username).first()
     model_data = correctForm(user)
-    # data = np.array(model_data, dtype = np.float32).reshape(1,-1)
-    learner = load(open("../../../original.pkl", 'rb'))
-    prediction = learner.predict(model_data)
+    # learn = load(open("../../../original.pkl", 'rb'))
+    prediction = learn.predict(model_data)
     recom_course = mapping(prediction[0])
+    flash(f'Account Updated successfully','success')
     return render_template("account.html", title="Account", user = current_user, recom_course = recom_course)
 
 
@@ -125,12 +142,17 @@ def question():
         iq = float("{0:.2f}".format((100*count)/current_user.userinfo.age))
         current_user.userinfo.iq = iq
         db.session.commit()
-        flash(f'Account Updated successfully','success')
         return redirect(url_for('users.result',score = count))
     return render_template('question.html', title = 'Question', proposed = questions)
 
-
 @users.route("/question/result/<score>")
 def result(score):
+    user = User.query.filter_by(username = current_user.username).first()
+    model_data = correctForm(user)
+    # learner = load(open("../../../original.pkl", 'rb'))
+    prediction = learner.predict(model_data)
+    recom_course = mapping(prediction[0])
+    user.userinfo.re_course = recom_course
+    db.session.commit()
     return render_template("result.html", score = score)
 
