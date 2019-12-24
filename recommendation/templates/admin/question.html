@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block content %}
+    
+    <form action="" method = "POST">
+        <div class="container justify-content-center">
+            <div class="row">
+                <div class="col-7">
+                    <div class="form-group">
+                        <label for="question" class="form-label">Question</label>
+                        <textarea name="question" class = "form-control" id="question" cols="30" rows="5" required></textarea>
+                        <span style = "color:red" id="question-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="question" class="form-label">Answer</label>
+                        <input type="text" name="answer" id="answer" class="form-control" required>
+                        <span style = "color:red" id="answer-error"></span>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <label for="option" class="form-label">Option</label>
+                    <div id="extra" class = "col-12">
+                        <div class = "form-group row">
+                            <input type="text" name="option" id="option" class="form-control col-9"> 
+                        </div>
+                    </div>
+                   
+                    <a style= "color : white ; margin-right: 34px" class = "btn btn-primary float-right" id = "addButton">+</a>
+                </div>
+            </div> 
+            <div class="form-group">
+                <input class="btn btn-outline-info " id="submit"  type="submit" value="Submit">
+            </div> 
+        </div>
+    </form>
+{% endblock content %}
+
+{% block javascript %}
+    <script src="{{ url_for('static', filename = 'js/add.js')}}"></script>
+{% endblock javascript %}

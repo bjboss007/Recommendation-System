@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, render_template, url_for, flash, request, jsonify, abort
 from flask_login import login_user, current_user,logout_user,login_required
-from recommendation.models import User, Arm, Subjectrating, Subject, UserInfo
+from recommendation.models import User, Arm, Subjectrating, Subject, UserInfo, Question
 from recommendation import bcrypt, db
 from .forms import RegistrationForm, LoginForm, UpdateForm, SubjectForm
 from .questions import questions
@@ -32,7 +32,6 @@ loop.close()
 @users.route('/', methods = ['GET','POST'])
 @users.route('/login', methods = ['GET','POST'])
 def login():
-    
     form = LoginForm()
     if current_user.is_authenticated:
         flash(f'You are already logged in ','info')
@@ -130,7 +129,9 @@ def account():
 
 @users.route("/question", methods = ['GET','POST'])
 def question():
-    proposed = questions
+    import random
+    proposed = Question.query.all()[:10]
+    random.shuffle(proposed, random = None)
     incoming = {}
     if request.method == "POST":
         count = 0
@@ -138,14 +139,18 @@ def question():
             incoming[i] = j[0]
         for question in proposed:
             for i in incoming.keys():
-                if question["id"] == int(i):
-                    if incoming[i] == question["answer"]:
-                        count+=1            
+                # if question["id"] == int(i):
+                if question.id == int(i):
+                    # if incoming[i] == question["answer"]:
+                    if incoming[i] == question.answer:
+                        count+=1
+        print("*"*90)     
+        print(count)       
         iq = float("{0:.2f}".format((100*count)/current_user.userinfo.age))
         current_user.userinfo.iq = iq
         db.session.commit()
         return redirect(url_for('users.result',score = count))
-    return render_template('question.html', title = 'Question', proposed = questions)
+    return render_template('question.html', title = 'Question', proposed = proposed)
 
 @users.route("/question/result/<score>")
 def result(score):

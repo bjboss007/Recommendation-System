@@ -4,9 +4,11 @@
         <form action="" method = "POST" >
             {% for question in proposed %}
                 <p>
-                    <h4>{{loop.index}}) {{question.question}} </h4>
+                    <!-- <h4>{{loop.index}}) {{question.question}} </h4> -->
+                    <h4>{{loop.index}}) {{question.name}} </h4>
                     {% for option in question.options %}
-                        <input type="radio" value = {{option}} name = {{question.id}}> <strong style="font-weight:400">{{option}}</strong><br>
+                        <!-- <input type="radio" value = {{option}} name = {{question.id}}> <strong style="font-weight:400">{{option}}</strong><br> -->
+                        <input type="radio" value = {{option.name}} name = {{question.id}}> <strong style="font-weight:400">{{option.name}}</strong><br>
                     {% endfor %}
                 </p>
                 

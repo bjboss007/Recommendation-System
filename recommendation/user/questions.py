@@ -11,7 +11,7 @@ questions = [
     },
     {
         "id":2,
-        "question":"WWhich vowel comes midway between J and T",
+        "question":"Which vowel comes midway between J and T",
         "answer":"O",
         "options":[
             "O",

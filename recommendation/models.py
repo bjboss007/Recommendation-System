@@ -121,20 +121,20 @@ class Subjectrating(db.Model):
       
 class Question(db.Model):
    id = db.Column(db.Integer, primary_key = True)
-   question = db.Column(db.String(300), nullable = False, unique = False)
+   name = db.Column(db.String(300), nullable = False, unique = False)
    answer = db.Column(db.String(20), nullable = False, unique = False)
-   Options = db.relationship('Option', backref = 'option', lazy = True) 
+   options = db.relationship('Option', backref = 'option', lazy = True) 
    
    def __repr__(self):
       return f"Question ('{self.name}', '{self.answer}')"
 
 class Option(db.Model):
    id = db.Column(db.Integer, primary_key = True)
-   Option = db.Column(db.String(50), nullable = False)
+   name = db.Column(db.String(50), nullable = False)
    question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable = False)
    
    def __repr__(self):
-      return f"Option ('{self.name}'"
+      return f"Option ('{self.name}')"
    
    
    

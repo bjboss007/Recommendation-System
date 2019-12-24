@@ -7,14 +7,14 @@ from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationE
 from recommendation.models import User, Option
 
 
-class Question(FlaskForm):
-    question = TextAreaField("Question", validators=[DataRequired()])
-    answer = StringField("answer", validators = [DataRequired()])
-    options = FieldList(FormField(Option), default = lambda: Option() )
-    submit = SubmitField("submit")
-    
-class Option(Form):
+class OptionForm(FlaskForm):
     name = StringField("Option", validators = [DataRequired()])
 
+class Question(FlaskForm):
+    question = TextAreaField("Question", validators=[DataRequired()])
+    answer = StringField("Answer", validators = [DataRequired()])
+    options = FieldList(FormField(OptionForm), min_entries=2)
+    submit = SubmitField("submit")
+    
 class CombinedForm(FlaskForm):
     questions = FieldList(FormField(Question))
