@@ -46,3 +46,20 @@ def addQuestion():
         db.session.commit()
         flash(f'Question successful added','success')
     return render_template('admin/question.html', title = "Add-question")
+
+@admin.route("/admin/list-users")
+def usersList():
+    page = request.args.get('page', 1, type = int)
+    # users = User.query.paginate(page, per_page = 5)
+    users = User.query.all()
+    userlist = []
+    for user in users:
+        userObj = {}
+        userObj["username"] = user.username
+        userObj["arm"] = user.userinfo.arm.name if user.userinfo != None else ""
+        userObj["IQ"] = user.userinfo.iq if user.userinfo != None else ""
+        userObj["career"] = user.userinfo.career if user.userinfo != None else ""
+        userObj["re_course"] = user.userinfo.re_course if user.userinfo != None else ""
+        userlist.append(userObj)
+        
+    return jsonify({"users":userlist})

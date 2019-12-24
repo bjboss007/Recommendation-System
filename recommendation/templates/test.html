@@ -4,7 +4,7 @@
         <fieldset class="form-group">
             <legend class="border-bottom md-4">Update Profile</legend>
             <div class="row">
-                <div class="col-5">
+                <div class="col-md-5">
                     <div class="content-section">
                         <div class="form-group">
                             <label class="form-control-label" for="username">username</label>
@@ -16,7 +16,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-5">
+                <div class="col-md-5">
                     <div class="content-section">
                         <div class="form-group">
                             <label class="form-control-label" for="age">Age</label>
@@ -38,7 +38,7 @@
                                     <thead class = "thead-dark">
                                         <tr>
                                             <th class = "text-center">Subject Name</th>
-                                            <th class = "text-center">Subject Rating</th>   
+                                            <th class = "text-center">Subject Rating (0-5)</th>   
                                         </tr>
                                     </thead>
                                     <tbody id = "subjectRow">
@@ -66,6 +66,7 @@
         </div>
     </form>
 
-
-
 {% endblock content %}
+{% block javascript %}
+    <script src="{{ url_for('static', filename = 'js/main.js')}}"></script>
+{% endblock javascript %}

@@ -1,6 +1,5 @@
 
-function checkEmpty (){
-    var message = field_msg => ''+field_msg+' is required';
+function checkEmpty (){    var message = field_msg => ''+field_msg+' is required';
     if (($("#question").val()).length === 0){
         error = message('Question');
         $("#question-error").text(error)
@@ -41,4 +40,5 @@ $(document).ready(function (){
     
    
 })
+
 

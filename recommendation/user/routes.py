@@ -131,7 +131,7 @@ def account():
 def question():
     import random
     proposed = Question.query.all()[:10]
-    random.shuffle(proposed, random = None)
+    random.shuffle(proposed)
     incoming = {}
     if request.method == "POST":
         count = 0
@@ -139,13 +139,9 @@ def question():
             incoming[i] = j[0]
         for question in proposed:
             for i in incoming.keys():
-                # if question["id"] == int(i):
                 if question.id == int(i):
-                    # if incoming[i] == question["answer"]:
                     if incoming[i] == question.answer:
-                        count+=1
-        print("*"*90)     
-        print(count)       
+                        count+=1      
         iq = float("{0:.2f}".format((100*count)/current_user.userinfo.age))
         current_user.userinfo.iq = iq
         db.session.commit()
