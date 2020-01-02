@@ -9,6 +9,9 @@ import os
 
 
 
+
+
+
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
@@ -33,6 +36,8 @@ def create_app(config_class = Config):
     
     app.register_blueprint(users)
     app.register_blueprint(admin)
+    
+    
     
     return app
 

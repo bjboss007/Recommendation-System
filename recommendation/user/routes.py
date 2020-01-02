@@ -11,11 +11,22 @@ from recommendation.utils import mapping, correctForm
 from pathlib import Path
 import asyncio
 
-root = Path(__file__).parent
+export_file = ''
+export_file_name = 'original.pkl'
+path = str(Path(__file__).parent)[:-4]
 
 users = Blueprint('users', __name__)
 
+# async def download_file(url, dest):
+#     if dest.exists(): return
+#     async with aiohttp.ClientSession() as session:
+#         async with session.get(url) as response:
+#             data = await response.read()
+#             with open(dest, 'wb') as f:
+#                 f.write(data)
+                
 async def setup_recommender():
+    # await download_file(export_file , path+export_file_name)
     try:
         learner = load(open("recommendation/original.pkl", 'rb'))
         return learner
@@ -41,14 +52,17 @@ def login():
         user = User.query.filter_by(email = form.email.data).first()
         if user and bcrypt.check_password_hash(user.password,form.password.data):
             login_user(user, remember = form.remember.data)
-            next_page = request.args.get('next')
-            if next_page:
-                return redirect(next_page)  
-            try:
-                if current_user.userinfo.re_course != '':
-                    return redirect(url_for('users.account'))
-            except Exception:
-                return redirect(url_for('users.update'))
+            if (current_user.email == "admin@gmail.com" and current_user.username == "Admin"):
+                return redirect(url_for('admin.usersListView'))
+            else:
+                next_page = request.args.get('next')
+                if next_page:
+                    return redirect(next_page)  
+                try:
+                    if current_user.userinfo.re_course != '':
+                        return redirect(url_for('users.account'))
+                except Exception:
+                    return redirect(url_for('users.update'))
         else:
             flash(f'Login Unsuccessful, Please check your email and password ','danger')
     return render_template("login.html", title = 'Login', form=form)

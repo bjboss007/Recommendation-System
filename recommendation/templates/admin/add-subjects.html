@@ -1,0 +1,45 @@
+{% extends 'admin/layout.html'%}
+{% block header %}
+    {% include 'includes/navbar.html' %}
+{% endblock header %}
+{% block content %}
+    
+    <div class="content-section">
+        <form action="" method="post">
+            <fieldset class="form-group">
+                <legend class="border-bottom md-4">Update Subject - {{ arm.name }}</legend>
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="content-section">
+                            <div class="form-group">
+                                <label class="form-control-label" for="arm">Arm</label>
+                                <input class="form-control" disabled="disabled" id="arm" name="arm" required type="text" value={{arm.name}}>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="content-section">
+                            <div class="form-group">
+                                <label class="form-control-label" for="subject">subjects</label>
+                                {% if arm.arm_subjects != null %}
+                                    {% for subject in arm.arm_subjects %}
+                                        <input class="form-control" disabled="disabled" id="subject" name="{{ subject.name }}" required type="text" value={{subject.name}}> <br>
+                                    {% endfor %} 
+                                {% else %}
+                                    <input class="form-control" id="subject" name="subject" required type="text" value= ""> 
+                                    <a style= "color : white ; margin-right: 34px" class = "btn btn-primary float-right" id = "addButton">+</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </fieldset>
+
+        </form>
+    </div>
+
+{% endblock content %}
+{% block javascript %}
+    <!-- <script src="{{ url_for('static', filename = 'js/arm-list.js')}}"></script> -->
+{% endblock javascript %}

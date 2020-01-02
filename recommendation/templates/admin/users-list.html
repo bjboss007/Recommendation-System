@@ -1,0 +1,29 @@
+{% extends 'admin/layout.html' %}
+{% block header %}
+    {% include 'includes/navbar.html' %}
+{% endblock header %}
+{% block content %}
+    <div class="content-section">
+        <div class="container ">
+            <div class="row ">
+                <table class = "table table-striped table-no-bordered table-hover " id = "userTable" width="100%" style="width:100%">
+                    <thead class = "thead-light" width="100%" style="width:100%">
+                        <tr>
+                            <th class = "text-center">Username</th>
+                            <th class = "text-center">Arm</th>
+                            <th class = "text-center">IQ</th>
+                            <th class = "text-center">Career</th>
+                            <th class = "text-center">Recom_course</th>   
+                        </tr>
+                    </thead>
+                    <tbody class = "text-center"  width="100%" style="width:100%">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+{% block javascript %}
+    <script src="{{ url_for('static', filename = 'js/ajax/userList.js')}}"></script>
+{% endblock javascript %}

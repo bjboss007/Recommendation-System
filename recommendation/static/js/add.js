@@ -29,16 +29,13 @@ $(document).ready(function (){
     addButton.addEventListener("click", function(){
         extra = `
                 <div class = "form-group row" id = "row-${count}-group">
-                    <input style = "margin-right:5px" type="text" name="option-${count}" id="option-${count}" class="form-control col-9"> 
+                    <input style = "margin-right:5px" type="text" name="option-${count}" id="option-${count}" class="form-control col-sm-9  col-xs-6"> 
                     <a style= "color : white" class = "btn btn-danger col-2" onClick = removeItem(${count})>-</a> 
                 </div>    
             `
        $("#extra").append(extra)
        count+=1
     })
-    
-    
-   
 })
 
 

@@ -1,3 +1,4 @@
+
 FROM python:3.7-slim-stretch
 
 RUN apt-get update && apt-get install -y git python3-dev gcc \
@@ -13,4 +14,4 @@ RUN python /server.py
 
 EXPOSE 5000
 
-CMD ["python", "run.py"]
+CMD ["python", "run.py runserver"]

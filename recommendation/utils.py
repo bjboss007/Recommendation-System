@@ -1,5 +1,7 @@
 import pandas as pd
 from flask import jsonify
+import asyncio
+import aiohttp
 from recommendation.models import User, Arm, Subjectrating, Subject, UserInfo
 
 def mapping(key):
@@ -31,8 +33,10 @@ def correctForm(user: object):
             dataform = [data["age"],data["IQ"],float(data["subjects"]["Mathematics"]),float(data["subjects"]["Biology"]),float(data["subjects"]["Physics"]),float(data["subjects"]["Chemistry"])]+science_padding
     elif data["arm"] == "Art":
         for sub in data["subjects"]:
-            dataform = [data["age"],data["IQ"],float(data["subjects"]["Mathematics"]),0.0,0.0,0.0,0.0,0.0,0.0,float(data["subjects"]["Government"]),float(data["subjects"]["Lit-in-English"]),float(data['subjects']["History"]),float(data['subjects']["CRK"])]
+            dataform = [data["age"],data["IQ"],float(data["subjects"]["Mathematics"]),0.0,0.0,0.0,0.0,0.0,0.0,float(data["subjects"]["Government"]),float(data["subjects"]["Lit-In-English"]),float(data['subjects']["History"]),float(data['subjects']["CRK"])]
     elif data["arm"] == "Commercial":
         for sub in data["subjects"]:
             dataform = [data["age"],data["IQ"],float(data['subjects']["Mathematics"]),0.0,0.0,0.0,float(data['subjects']["Accounting"]),float(data['subjects']["Commerce"]),float(data['subjects']["Economics"])]     
     return dataform
+
+
