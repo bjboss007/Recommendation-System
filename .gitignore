@@ -5,3 +5,5 @@
 .vscode/.ropeproject/config.py
 .vscode/.ropeproject/objectdb
 recommendation/original.pkl
+recommendation/mapping.csv
+recommendation/database.db

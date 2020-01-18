@@ -3,12 +3,17 @@ from recommendation import bcrypt, db
 from recommendation import create_app
 from recommendation.user.questions import questions
 from pathlib import Path
+import os
+
 
 app = create_app()
 app.test_request_context().push()
 
-
 def starter():
+    
+    db.drop_all()
+    db.create_all()
+    
     art_arm = Arm(name = "Art")
     comm_arm = Arm(name = "Commercial")
     sci_arm = Arm(name = "Science")

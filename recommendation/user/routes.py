@@ -10,23 +10,26 @@ import numpy as np
 from recommendation.utils import mapping, correctForm
 from pathlib import Path
 import asyncio
+import aiohttp
 
-export_file = ''
-export_file_name = 'original.pkl'
+export_file = ['https://drive.google.com/uc?export=download&id=1bJzClt8xux4yQi9ng4VtXWyDUX5iYrqU','https://drive.google.com/uc?export=download&id=15NabvuotRScvKsHIYpN8R3PIwRrY0-Wj']
+
+export_file_name = ['original.pkl','mapping.csv']
 path = str(Path(__file__).parent)[:-4]
 
 users = Blueprint('users', __name__)
 
-# async def download_file(url, dest):
-#     if dest.exists(): return
-#     async with aiohttp.ClientSession() as session:
-#         async with session.get(url) as response:
-#             data = await response.read()
-#             with open(dest, 'wb') as f:
-#                 f.write(data)
+async def download_file(url, dest):
+    if  os.path.exists(dest): return
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            data = await response.read()
+            with open(dest, 'wb') as f:
+                f.write(data)
                 
 async def setup_recommender():
-    # await download_file(export_file , path+export_file_name)
+    for url, file in zip(export_file, export_file_name):
+        await download_file(url, path+file)
     try:
         learner = load(open("recommendation/original.pkl", 'rb'))
         return learner
@@ -39,7 +42,6 @@ learner = loop.run_until_complete(asyncio.gather(*tasks))[0]
 loop.close()
 
         
-
 @users.route('/', methods = ['GET','POST'])
 @users.route('/login', methods = ['GET','POST'])
 def login():
