@@ -9,6 +9,6 @@ Run:
 3)      python run.py db migrate       # This is to check for changes in the model and create the database schema
 4)      python run.py db upgrade       # This effect the changes to the dataase 
 
-After this: 
-Run: python run.py runserver --port = 8081 --debug #to run the application.
+After the above commands, Run the below to start the application: 
+python run.py runserver --port = 8081 --debug #to run the application.
  
