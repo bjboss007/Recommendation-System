@@ -10,7 +10,7 @@ from flask_login import UserMixin
 def load_user(user_id):
    return User.query.get(int(user_id))
 
-
+# This is the user database schema
 class User(db.Model, UserMixin):
    id = db.Column(db.Integer, primary_key=True)
    username = db.Column(db.String(20), unique = True, nullable = False)
@@ -19,10 +19,12 @@ class User(db.Model, UserMixin):
    image_file = db.Column(db.String(100))
    userinfo = db.relationship('UserInfo', uselist = False, backref = "user")
 
+   #This is used to get the reset password token ovet a period of time
    def get_reset_token(self, expires_sec = 1800):
       s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
       return s.dumps({'user_id':self.id}).decode('utf-8')
    
+   #This verifies the reset password token 
    @staticmethod
    def verify_token(token):
       s = Serializer(current_app.config['SECRET_KEY'])
@@ -32,6 +34,7 @@ class User(db.Model, UserMixin):
          return None
       return User.query.get(user_id)
    
+   #this is the constructor of the class User: it initiates the requires fields when the user form is passed to it
    def __init__(self, **kwargs):
       if kwargs["email"] is not None : # and kwargs["image_file"] is None:
          self.image_file = hashlib.md5(kwargs["email"].encode('utf-8')).hexdigest()
@@ -40,7 +43,7 @@ class User(db.Model, UserMixin):
       self.password = bcrypt.generate_password_hash(kwargs["password"]).decode('utf-8') 
       self.image_file = self.gravatar(self)
       
-   
+   #this is used to update the user Image when the user changes the email on their account
    def change_email(self):
       self.email = new_email
       self.image_file = hashlib.md5(
@@ -48,6 +51,7 @@ class User(db.Model, UserMixin):
       db.session.add(self)
       return True
 
+   #This is used to get the user gravatar(user image) based on the email of the user
    @staticmethod
    def gravatar(self, size=100, default='identicon', rating='g'):
       if request.is_secure:
@@ -63,12 +67,13 @@ class User(db.Model, UserMixin):
       return f"user('{self.username}','{self.email}','{self.image_file}')"
 
 
-
+#This defines the join table for the many to many relationship of the user and the subject ratings
 user_subjects = db.Table('user_subjects',
     db.Column('subject_rating_id', db.Integer, db.ForeignKey('subject_rating.id'), primary_key=True),
     db.Column('user_info_id', db.Integer, db.ForeignKey('user_info.id'), primary_key=True)
 )
 
+#This defines additional imformation about the user
 class UserInfo(db.Model):
    __tablename__ = "user_info"
    id = db.Column(db.Integer, primary_key = True)
@@ -77,25 +82,30 @@ class UserInfo(db.Model):
    iq = db.Column(db.Integer, nullable = False)
    arm_id = db.Column(db.Integer, db.ForeignKey('arm.id'))
    re_course = db.Column(db.String, nullable = False)
-   subjects = db.relationship('Subjectrating', secondary=user_subjects, lazy='subquery', backref=db.backref('users', lazy=True))
+   subjects = db.relationship('Subjectrating', secondary=user_subjects, lazy='subquery', 
+                              backref=db.backref('users', lazy=True))
    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
    
    def __repr__(self):
       return f"User_info => '{self.user_id}'"
 
    
-   
-arm_subjects = db.Table('arm_subjects',
+#This defined the join table for the many to many relationship of the arm and its subject
+#it was supposed to be a one to many relationship from the arm but because one subject can belong to many arms
+#Mathematics belongs to all the arms and this could be extend to some other general subjects too
+arm_subjects = db.Table('arm_subjects',   
     db.Column('subject_id', db.Integer, db.ForeignKey('subject.id'), primary_key=True),
     db.Column('arm_id', db.Integer, db.ForeignKey('arm.id'), primary_key=True)
 )
 
+
+#This defines the database schema for arm 
 class Arm(db.Model):
    __tablename__ = 'arm'
    id = db.Column(db.Integer, primary_key = True)
    name = db.Column(db.String(32), nullable = False)
    arm_subjects = db.relationship('Subject', secondary=arm_subjects, lazy='subquery',
-        backref=db.backref('arm', lazy=True))
+                                 backref=db.backref('arm', lazy=True))
    users = db.relationship('UserInfo', backref = 'arm', lazy = 'dynamic')
    
    

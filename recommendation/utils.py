@@ -36,7 +36,7 @@ def correctForm(user: object):
             dataform = [data["age"],data["IQ"],float(data["subjects"]["Mathematics"]),0.0,0.0,0.0,0.0,0.0,0.0,float(data["subjects"]["Government"]),float(data["subjects"]["Lit-In-English"]),float(data['subjects']["History"]),float(data['subjects']["CRK"])]
     elif data["arm"] == "Commercial":
         for sub in data["subjects"]:
-            dataform = [data["age"],data["IQ"],float(data['subjects']["Mathematics"]),0.0,0.0,0.0,float(data['subjects']["Accounting"]),float(data['subjects']["Commerce"]),float(data['subjects']["Economics"])]     
+            dataform = [data["age"],data["IQ"],float(data['subjects']["Mathematics"]),0.0,0.0,0.0,float(data['subjects']["Accounting"]),float(data['subjects']["Commerce"]),float(data['subjects']["Economics"]), 0.0,0.0,0.0,0.0]     
     return dataform
 
 
